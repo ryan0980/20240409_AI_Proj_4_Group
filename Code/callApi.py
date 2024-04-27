@@ -21,6 +21,10 @@ class GET:
     # Return Values: your current world and state in that world.  Think of this as your GPS, and confirm where you are.  If you are in world “-1”, that means you are in no world, and you can enter a world.   
     def getLocation(self, teamId: str) ->None:
          self.url ='https://www.notexponential.com/aip2pgaming/api/rl/gw.php?type=location&teamId=' + teamId
+    
+
+    def resetWorld(self, teamId: str) ->None:
+        self.url = 'https://www.notexponential.com/aip2pgaming/api/rl/reset.php?teamId='+ teamId +'&otp=5712768807'
 
 class POST:
     def __init__(self):
@@ -37,26 +41,32 @@ class POST:
     # Body: type=”move”, teamId=$teamId, move=”$move”, worldId=$worldId
     # Return Values: Reward, New State entered $runId started
     # Fails if you are not already in a world (in that case, enter a world first).
-    def makeMove(self, teamid :str,  move : str, worldId :str) ->None:
-        self.payload = {'type': 'move', 'teamId': teamid, 'move': move, 'worldId': worldId}
+    def makeMove(self, teamId :str,  move : str, worldId :str) ->None:
+        self.payload = {'type': 'move', 'teamId': teamId, 'move': move, 'worldId': worldId}
 
-
+   
 
 if __name__ == "__main__":
     # example
-    get_test = GET()
-    get_test.getRuns('1399', 10)
-    response = requests.request("GET", url=get_test.url, headers=get_test.headers)
-    print(response.text)
+    # get_test = GET()
+    # get_test.getRuns('1399', 10)
+    # response = requests.request("GET", url=get_test.url, headers=get_test.headers)
+    # print(response.text)
+
+    # post_test = POST()
+    # post_test.enterWorld('1', '1399')
+    # print(post_test.payload)
+    # response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
+    # print(response.text)
+
     post_test = POST()
-    post_test.enterWorld('1', '1399')
+    post_test.makeMove('1399', 'N', '1')
     print(post_test.payload)
     response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
     print(response.text)
 
-    post_test = POST()
-    post_test.makeMove('1399', 'N', '0')
-    print(post_test.payload)
-    response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
-    print(response.text)
+    # getOp = GET()
+    # getOp.resetWorld('1399')
+    # response = requests.request("GET", url=getOp.url, headers=getOp.headers)
+    # print(response.text)
 
