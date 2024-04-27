@@ -43,21 +43,20 @@ class POST:
 
 
 if __name__ == "__main__":
-     # example
-     get_test = GET()
-     get_test.getRuns('1399', 10)
-     response = requests.request("GET", url=get_test.url, headers=get_test.headers)
-     print(response.text)
+    # example
+    get_test = GET()
+    get_test.getRuns('1399', 10)
+    response = requests.request("GET", url=get_test.url, headers=get_test.headers)
+    print(response.text)
+    post_test = POST()
+    post_test.enterWorld('1', '1399')
+    print(post_test.payload)
+    response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
+    print(response.text)
 
-    #  post_test = POST()
-    #  post_test.enterWorld('1', '1399')
-    #  print(post_test.payload)
-    #  response = requests.request("POST", url = post_test.url, headers=post_test.headers, data = post_test.payload)
-    #  print(response.text)
-
-    #  post_test = POST()
-    #  post_test.makeMove('1399', 'N', '0')
-    #  print(post_test.payload)
-    #  response = requests.request("POST", url = post_test.url, headers=post_test.headers, data = post_test.payload)
-    #  print(response.text)
+    post_test = POST()
+    post_test.makeMove('1399', 'N', '0')
+    print(post_test.payload)
+    response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
+    print(response.text)
 
