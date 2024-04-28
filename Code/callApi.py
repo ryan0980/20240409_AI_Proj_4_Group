@@ -1,7 +1,6 @@
 import json
 
 import requests
-
 # define all the GET Method in this class
 headers = {
     'x-api-key': 'ac4f3d3f5d3dff02d9bf',
@@ -32,6 +31,9 @@ class GET:
         response = requests.request("GET", url=self.url, headers=self.headers)
         x,y = map(int, json.loads(response.text)["state"].split(':'))
         return (x, y)
+
+    def resetWorld(self, teamId: str) ->None:
+        self.url = 'https://www.notexponential.com/aip2pgaming/api/rl/reset.php?teamId='+ teamId +'&otp=5712768807'
 
 class POST:
     def __init__(self):
@@ -65,7 +67,22 @@ if __name__ == "__main__":
     response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
     print(response.text)
 
+    # post_test = POST()
+    # post_test.enterWorld('1', '1399')
+    # print(post_test.payload)
+    # response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
+    # print(response.text)
 
+    post_test = POST()
+    post_test.makeMove('1399', 'N', '1')
+    print(post_test.payload)
+    response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
+    print(response.text)
+
+    # getOp = GET()
+    # getOp.resetWorld('1399')
+    # response = requests.request("GET", url=getOp.url, headers=getOp.headers)
+    # print(response.text)
     moveInfo = post_test.makeMove('1399', 'N', '0')
     print(moveInfo)
 
