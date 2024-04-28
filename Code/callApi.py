@@ -69,7 +69,7 @@ if __name__ == "__main__":
     print(text)
 
     post_test = POST()
-    post_test.enterWorld('1', '1399')
+    post_test.enterWorld('2', '1399')
     print(post_test.payload)
     response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
     print(response.text)
@@ -79,8 +79,9 @@ if __name__ == "__main__":
     # response = requests.request("GET", url=getOp.url, headers=getOp.headers)
     # print(response.text)
 
-    moveInfo = post_test.makeMove('1399', 'N', '1')
-    print(moveInfo)
+    # W: -1,0   N: 0,+1  S: 0,-1  E:+1,0
+    # moveInfo = post_test.makeMove('1399', 'E', '1')
+    # print(moveInfo)
 
     get_test = GET()
     state = get_test.getLocation('1399')
