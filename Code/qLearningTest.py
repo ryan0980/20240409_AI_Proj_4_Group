@@ -23,7 +23,7 @@ def choose_action(state):
 
 def learn(state, state2, reward, action):
     stateStr = ','.join(map(str, state))
-    print("state: " + stateStr)
+    print("learning at position: " + stateStr +"   action:")
     print(action)
     predict = Q_table[state][action]
     target = reward + gamma * np.max(Q_table[state2])
