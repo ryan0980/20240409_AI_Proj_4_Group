@@ -1,6 +1,7 @@
 import json
 
 import requests
+
 # define all the GET Method in this class
 headers = {
     'x-api-key': 'ac4f3d3f5d3dff02d9bf',
@@ -29,11 +30,12 @@ class GET:
     def getLocation(self, teamId: str) -> tuple:
         self.url = 'https://www.notexponential.com/aip2pgaming/api/rl/gw.php?type=location&teamId=' + teamId
         response = requests.request("GET", url=self.url, headers=self.headers)
-        x,y = map(int, json.loads(response.text)["state"].split(':'))
+        x, y = map(int, json.loads(response.text)["state"].split(':'))
         return (x, y)
 
-    def resetWorld(self, teamId: str) ->None:
-        self.url = 'https://www.notexponential.com/aip2pgaming/api/rl/reset.php?teamId='+ teamId +'&otp=5712768807'
+    def resetWorld(self, teamId: str) -> None:
+        self.url = 'https://www.notexponential.com/aip2pgaming/api/rl/reset.php?teamId=' + teamId + '&otp=5712768807'
+
 
 class POST:
     def __init__(self):
@@ -55,6 +57,7 @@ class POST:
         response = requests.request("POST", url=self.url, headers=self.headers, data=self.payload)
         return json.loads(response.text)
 
+
 if __name__ == "__main__":
     # example
     get_test = GET()
@@ -62,28 +65,17 @@ if __name__ == "__main__":
     print(text)
 
     post_test = POST()
-    post_test.enterWorld('0', '1399')
-    print(post_test.payload)
-    response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
-    print(response.text)
-
-    # post_test = POST()
     # post_test.enterWorld('1', '1399')
     # print(post_test.payload)
     # response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
     # print(response.text)
 
-    post_test = POST()
-    post_test.makeMove('1399', 'N', '1')
-    print(post_test.payload)
-    response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
-    print(response.text)
-
     # getOp = GET()
     # getOp.resetWorld('1399')
     # response = requests.request("GET", url=getOp.url, headers=getOp.headers)
     # print(response.text)
-    moveInfo = post_test.makeMove('1399', 'N', '0')
+
+    moveInfo = post_test.makeMove('1399', 'N', '1')
     print(moveInfo)
 
     get_test = GET()
