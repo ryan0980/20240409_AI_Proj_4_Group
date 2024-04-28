@@ -8,9 +8,10 @@ epsilon = 0.1  # Exploration rate
 episodes = 10000  # Number of episodes to run
 teamId = "1399"
 worldId = "1"
+filename = 'q-table.npy'
 
 # Initialize the Q-table, arbitrarily assuming a nxn grid world
-Q_table = np.zeros((100, 100, 4))
+# Q_table = np.zeros((40, 40, 4))
 actions = {0: 'N', 1: 'S', 2: 'E', 3: 'W'}  # action to index mapping
 
 
@@ -28,11 +29,11 @@ def learn(state, state2, reward, action):
     predict = Q_table[state][action]
     target = reward + gamma * np.max(Q_table[state2])
     Q_table[state][action] += alpha * (target - predict)
+    np.save(filename, Q_table)
 
 
 if __name__ == "__main__":
-    print(Q_table[1, 12][0])
-
+    Q_table = np.load(filename)
     # Main loop
     for episode in range(episodes):
         getAPI = GET()
@@ -55,10 +56,11 @@ if __name__ == "__main__":
             learn(state, state2, reward, action)  # Update Q-values
 
             state = state2
-            total_reward += scoreIncrement
+            total_reward = getAPI.getRuns(teamId, 1)["runs"][0]["score"]
 
-            if getAPI.getRuns(teamId, 1)["runs"][0]["runId"] != runId:
+            if scoreIncrement == 0:
                 done = True
+                break
 
         print(f"Episode {episode + 1}: total reward -> {total_reward}")
 
