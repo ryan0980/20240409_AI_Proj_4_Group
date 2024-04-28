@@ -55,6 +55,7 @@ class POST:
     def makeMove(self, teamid: str, move: str, worldId: str) -> json:
         self.payload = {'type': 'move', 'teamId': teamid, 'move': move, 'worldId': worldId}
         response = requests.request("POST", url=self.url, headers=self.headers, data=self.payload)
+        print("resText"+response.text)
         return json.loads(response.text)
 
 
