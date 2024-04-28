@@ -1,6 +1,7 @@
 import json
 
 import requests
+from pyasn1.compat.octets import null
 
 # define all the GET Method in this class
 headers = {
@@ -30,6 +31,8 @@ class GET:
     def getLocation(self, teamId: str) -> tuple:
         self.url = 'https://www.notexponential.com/aip2pgaming/api/rl/gw.php?type=location&teamId=' + teamId
         response = requests.request("GET", url=self.url, headers=self.headers)
+        if json.loads(response.text)["state"] == null:
+            return null
         x, y = map(int, json.loads(response.text)["state"].split(':'))
         return (x, y)
 
@@ -66,10 +69,10 @@ if __name__ == "__main__":
     print(text)
 
     post_test = POST()
-    # post_test.enterWorld('1', '1399')
-    # print(post_test.payload)
-    # response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
-    # print(response.text)
+    post_test.enterWorld('1', '1399')
+    print(post_test.payload)
+    response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
+    print(response.text)
 
     # getOp = GET()
     # getOp.resetWorld('1399')

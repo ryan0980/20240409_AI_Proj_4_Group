@@ -4,7 +4,7 @@ from callApi import *
 # Hyperparameters
 alpha = 0.1  # Learning rate
 gamma = 0.6  # Discount factor
-epsilon = 0.1  # Exploration rate
+epsilon = 0.8  # Exploration rate
 episodes = 10000  # Number of episodes to run
 teamId = "1399"
 worldId = "1"
@@ -27,7 +27,10 @@ def learn(state, state2, reward, action):
     print("learning at position: " + stateStr + "   action:")
     print(action)
     predict = Q_table[state][action]
-    target = reward + gamma * np.max(Q_table[state2])
+    if state2 == null:
+        target = reward + gamma * 10000
+    else:
+        target = reward + gamma * np.max(Q_table[state2])
     Q_table[state][action] += alpha * (target - predict)
     np.save(filename, Q_table)
 
@@ -52,8 +55,12 @@ if __name__ == "__main__":
             reward = moveJson["reward"]
             scoreIncrement = moveJson["scoreIncrement"]
             state2 = getAPI.getLocation("1399")
-
             learn(state, state2, reward, action)  # Update Q-values
+            if state2 == null:
+                total_reward = getAPI.getRuns(teamId, 1)["runs"][0]["score"]
+                break
+
+
 
             state = state2
             total_reward = getAPI.getRuns(teamId, 1)["runs"][0]["score"]
