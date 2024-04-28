@@ -7,8 +7,8 @@ gamma = 0.6  # Discount factor
 epsilon = 0.8  # Exploration rate
 episodes = 10000  # Number of episodes to run
 teamId = "1399"
-worldId = "1"
-filename = 'q-table.npy'
+worldId = "2"
+filename = 'q-table2.npy'
 
 # Initialize the Q-table, arbitrarily assuming a nxn grid world
 # Q_table = np.zeros((40, 40, 4))
