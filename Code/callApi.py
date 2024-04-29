@@ -31,7 +31,7 @@ class GET:
     def getLocation(self, teamId: str) -> tuple:
         self.url = 'https://www.notexponential.com/aip2pgaming/api/rl/gw.php?type=location&teamId=' + teamId
         response = requests.request("GET", url=self.url, headers=self.headers)
-        if json.loads(response.text)["state"] == null:
+        if not json.loads(response.text)["state"]:
             return null
         x, y = map(int, json.loads(response.text)["state"].split(':'))
         world = json.loads(response.text)["world"]
