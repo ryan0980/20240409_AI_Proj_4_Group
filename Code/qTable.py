@@ -1,7 +1,7 @@
 import numpy as np
 
 # The filename where the Q-table will be saved
-Q_TABLE_FILENAME = 'q-table4.npy'
+Q_TABLE_FILENAME = 'q-table7.npy'
 
 
 def initialize_q_table():

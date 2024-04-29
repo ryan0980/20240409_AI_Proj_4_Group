@@ -1,6 +1,7 @@
 import numpy as np
 from callApi import *
 import os
+import  random
 
 # Hyperparameters
 alpha = 0.1  # Learning rate
@@ -8,11 +9,11 @@ gamma = 0.6  # Discount factor
 epsilon = 0.8  # Exploration rate
 episodes = 10000  # Number of episodes to run
 teamId = "1399"
-worldId = "1"
-exitReward = 1000
-filename = 'q-table.npy'
+worldId = "10"
+exitReward = 10000
+filename = 'q-table10.npy'
 runTimes = 5  # run 5 times in a world
-exit = (24, 24)
+exit = (3, 0)
 
 # Initialize the Q-table, arbitrarily assuming a nxn grid world
 # Q_table = np.zeros((40, 40, 4))
@@ -24,8 +25,6 @@ def choose_action(state, Q_table):
     if np.random.uniform(0, 1) < epsilon:
         return np.random.choice(list(actions.keys()))  # Explore
     else:
-        print("State for indexing:", state)
-        print("Shape of Q_table:", Q_table.shape)
 
         return np.argmax(Q_table[state])  # Exploit the best known action
 
@@ -55,13 +54,9 @@ def learn(state, state2, reward, action):
     print("learning at position: " + stateStr + "   action:")
     print(action)
 
-    print("Type and value of state:", type(state), state)
-    print("Type and value of action:", type(action), action)
-    print("Shape of Q_table:", Q_table.shape)
-
     predict = Q_table[state][action]
     if state2 == null:
-        target = reward + gamma * exitReward
+        target = reward + gamma * reward
     else:
         target = reward + gamma * np.max(Q_table[state2])
     Q_table[state][action] += alpha * (target - predict)
@@ -134,6 +129,8 @@ def autoRun(startWorld: int, endWorld: int):
 if __name__ == "__main__":
     # Initialization
     Q_table = np.load(filename)
+    counter = 0
+    scoreIncrement = 0
     # Main loop
     for episode in range(episodes):
         getAPI = GET()
@@ -142,7 +139,7 @@ if __name__ == "__main__":
         print(state)
         if not state:
             # if you want the program never stop, # the 'break' below
-            break
+            # break
             postAPI.enterWorld(worldId, teamId)
             state = getAPI.getLocation("1399")[1]
         runId = getAPI.getRuns(teamId, 1)["runs"][0]["runId"]
@@ -153,13 +150,26 @@ if __name__ == "__main__":
         while not done:
             # action = choose_action(state)
             action = choose_quick_action_randomly(state)
+            # if counter >= 90 and scoreIncrement == 0:
+            #    action = choose_quick_action_randomly(state)
+
+            # if counter >= 90 and scoreIncrement == 0:
+            #     action = choose_quick_action_randomly(state)
+            # if counter <= 40:
+            #     action = 2
+            # if 40 < counter < 90:
+            #     action = 3
+            # if counter >= 90 and scoreIncrement != 0:
+            #     counter = 0
+            #     break
+            counter += 1
             moveJson = postAPI.makeMove(teamId, actions[action], worldId)
             print(moveJson)
             reward = moveJson["reward"]
             scoreIncrement = moveJson["scoreIncrement"]
             state2 = getAPI.getLocation("1399")[1]
             learn(state, state2, reward, action)  # Update Q-values
-            if state2 == null:
+            if not state2:
                 total_reward = getAPI.getRuns(teamId, 1)["runs"][0]["score"]
                 break
 

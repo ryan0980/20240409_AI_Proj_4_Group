@@ -5,8 +5,8 @@ from pyasn1.compat.octets import null
 
 # define all the GET Method in this class
 headers = {
-    'x-api-key': 'ac4f3d3f5d3dff02d9bf',
-    'userId': '3597',
+    'x-api-key': '3e39b9b8cab6cae613bc',
+    'userId': '3631',
     'Content-Type': 'application/x-www-form-urlencoded',
     'User-Agent': 'PostmanRuntime/7.37.0',
     'Connection': 'keep-alive',
@@ -31,13 +31,6 @@ class GET:
     def getLocation(self, teamId: str) -> tuple:
         self.url = 'https://www.notexponential.com/aip2pgaming/api/rl/gw.php?type=location&teamId=' + teamId
         response = requests.request("GET", url=self.url, headers=self.headers)
-<<<<<<< HEAD
-        print(response.text)
-        if json.loads(response.text)["state"] == null:
-            return null
-        x, y = map(int, json.loads(response.text)["state"].split(':'))
-=======
->>>>>>> 4f61fc7306e889a88cb84f98abd46f272835c24a
         world = json.loads(response.text)["world"]
         if not json.loads(response.text)["state"]:
             return world, null
@@ -46,9 +39,11 @@ class GET:
 
     def resetWorld(self, teamId: str) -> None:
         self.url = 'https://www.notexponential.com/aip2pgaming/api/rl/reset.php?teamId=' + teamId + '&otp=5712768807'
-        response = requests.request("GET", url=self.url, headers=self.headers)
-        print(response.text)
 
+    def getScore(self, teamId: str) -> json:
+        self.url = 'https://www.notexponential.com/aip2pgaming/api/rl/score.php?type=score&teamId=' + teamId
+        response = requests.request("GET", url=self.url, headers=self.headers)
+        return json.loads(response.text)
 
 class POST:
     def __init__(self):
@@ -78,14 +73,31 @@ class POST:
 if __name__ == "__main__":
     # example
     get_test = GET()
-    text = get_test.getRuns('1399', 2)
+    text = get_test.getScore('1399')
     print(text)
 
-    post_test = POST()
-    post_test.enterWorld('4', '1399')
+    get_test = GET()
+    text = get_test.getRuns('1399',10000000)
+    print(text)
+    # Count the records for each 'gworldId'
+    gworld_counts = {}
+    for run in text['runs']:
+        # Get the 'gworldId'
+        gworld_id = run.get('gworldId')
+        # If the 'gworldId' is already in the dictionary, increment the count
+        if gworld_id in gworld_counts:
+            gworld_counts[gworld_id] += 1
+        # If this is the first time we see the 'gworldId', initialize count to 1
+        else:
+            gworld_counts[gworld_id] = 1
+
+    # Output the results
+    print(gworld_counts)
+    #  post_test = POST()
+    #  post_test.enterWorld('4', '1399')
 
     # getOp = GET()
-    # getOp.resetWorld('1399')
+    # getOp.resetWorld('1412')
     # response = requests.request("GET", url=getOp.url, headers=getOp.headers)
     # print(response.text)
 
@@ -94,5 +106,5 @@ if __name__ == "__main__":
     # print(moveInfo)
 
     get_test = GET()
-    state = get_test.getLocation('1399')
+    state = get_test.getLocation('1412')
     print(state)
