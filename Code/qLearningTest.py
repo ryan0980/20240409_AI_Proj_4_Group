@@ -1,3 +1,4 @@
+import random
 import numpy as np
 from callApi import *
 import os
@@ -8,11 +9,11 @@ gamma = 0.6  # Discount factor
 epsilon = 0.8  # Exploration rate
 episodes = 10000  # Number of episodes to run
 teamId = "1399"
-worldId = "4"
+worldId = "1"
 exitReward = 1000
-filename = 'q-table4.npy'
+filename = 'q-table.npy'
 runTimes = 5  # run 5 times in a world
-exit = (39, 39)
+exit = (24, 24)
 
 # Initialize the Q-table, arbitrarily assuming a nxn grid world
 # Q_table = np.zeros((40, 40, 4))
@@ -26,16 +27,23 @@ def choose_action(state):
         return np.argmax(Q_table[state])  # Exploit the best known action
 
 
-def choose_quick_action(state):
+def choose_quick_action_randomly(state):
     # W: -1,0   N: 0,+1  S: 0,-1  E:+1,0
-    if state[0] < exit[0]:
-        return 2
-    if state[0] > exit[0]:
-        return 3
-    if state[1] < exit[1]:
-        return 0
-    if state[1] > exit[1]:
-        return 1
+    conditions = [
+        (state[1] < exit[1], 0),
+        (state[1] > exit[1], 1),
+        (state[0] < exit[0], 2),
+        (state[0] > exit[0], 3)
+    ]
+
+    # Randomize the order of the conditions
+    random.shuffle(conditions)
+
+    # Check each condition in the random order
+    for condition, result in conditions:
+        if condition:
+            return result
+
     return np.random.choice(list(actions.keys()))
 
 
@@ -121,19 +129,22 @@ if __name__ == "__main__":
     # Main loop
     for episode in range(episodes):
         getAPI = GET()
+        postAPI = POST()
         state = getAPI.getLocation("1399")[1]  # Get initial state
         print(state)
-        if state == null:
+        if not state:
+            # if you want the program never stop, # the 'break' below
             break
+            postAPI.enterWorld(worldId, teamId)
+            state = getAPI.getLocation("1399")[1]
         runId = getAPI.getRuns(teamId, 1)["runs"][0]["runId"]
 
         total_reward = 0
         done = False
 
-        postAPI = POST()
         while not done:
             # action = choose_action(state)
-            action = choose_quick_action(state)
+            action = choose_quick_action_randomly(state)
             moveJson = postAPI.makeMove(teamId, actions[action], worldId)
             print(moveJson)
             reward = moveJson["reward"]
