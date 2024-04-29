@@ -34,7 +34,8 @@ class GET:
         if json.loads(response.text)["state"] == null:
             return null
         x, y = map(int, json.loads(response.text)["state"].split(':'))
-        return (x, y)
+        world = json.loads(response.text)["world"]
+        return world, (x, y)
 
     def resetWorld(self, teamId: str) -> None:
         self.url = 'https://www.notexponential.com/aip2pgaming/api/rl/reset.php?teamId=' + teamId + '&otp=5712768807'
@@ -51,6 +52,9 @@ class POST:
     # Fails if you are already in a world.
     def enterWorld(self, worldId: str, teamid: str) -> None:
         self.payload = {'type': 'enter', 'worldId': worldId, 'teamId': teamid}
+        response = requests.request("POST", url=self.url, headers=self.headers, data=self.payload)
+        print("resText"+response.text)
+        return json.loads(response.text)
 
     # Body: type=”move”, teamId=$teamId, move=”$move”, worldId=$worldId
     # Return Values: Reward, New State entered $runId started
