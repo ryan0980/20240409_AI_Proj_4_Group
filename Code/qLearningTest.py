@@ -1,4 +1,3 @@
-import random
 import numpy as np
 from callApi import *
 import os
@@ -20,10 +19,14 @@ exit = (24, 24)
 actions = {0: 'N', 1: 'S', 2: 'E', 3: 'W'}  # action to index mapping
 
 
-def choose_action(state):
+def choose_action(state, Q_table):
+
     if np.random.uniform(0, 1) < epsilon:
         return np.random.choice(list(actions.keys()))  # Explore
     else:
+        print("State for indexing:", state)
+        print("Shape of Q_table:", Q_table.shape)
+
         return np.argmax(Q_table[state])  # Exploit the best known action
 
 
@@ -51,6 +54,11 @@ def learn(state, state2, reward, action):
     stateStr = ','.join(map(str, state))
     print("learning at position: " + stateStr + "   action:")
     print(action)
+
+    print("Type and value of state:", type(state), state)
+    print("Type and value of action:", type(action), action)
+    print("Shape of Q_table:", Q_table.shape)
+
     predict = Q_table[state][action]
     if state2 == null:
         target = reward + gamma * exitReward
@@ -81,14 +89,13 @@ def autoRun(startWorld: int, endWorld: int):
                 Q_table = np.load(filename)
             else:
                 # Create a new Q-table with all values initialized to zero
-                Q_table = np.zeros((40, 40, 4))
+                Q_table = np.zeros((40, 40, 4), dtype = float)
                 # Save the new Q-table to the file
                 np.save(filename, Q_table)
-            Q_table = np.load(filename)
             # Main loop
             for episode in range(episodes):
                 # getAPI = GET()
-                state = getAPI.getLocation(teamId)  # Get initial state
+                _, state = getAPI.getLocation(teamId)  # Get initial state
                 print(state)
                 runId = getAPI.getRuns(teamId, 1)["runs"][0]["runId"]
 
@@ -97,13 +104,13 @@ def autoRun(startWorld: int, endWorld: int):
 
                 # postAPI = POST()
                 while not done:
-                    action = choose_action(state)
-                    moveJson = postAPI.makeMove(teamId, actions[action], worldId)
+                    action = choose_action(state, Q_table)
+                    moveJson = postAPI.makeMove(teamId, actions[action], str(currentWorld))
                     print(moveJson)
                     reward = moveJson["reward"]
                     scoreIncrement = moveJson["scoreIncrement"]
                     _, state2 = getAPI.getLocation(teamId)
-                    learn(state, state2, reward, action)  # Update Q-values
+                    learn(state, state2, reward, action, Q_table, filename)  # Update Q-values
                     if state2 == null:
                         total_reward = getAPI.getRuns(teamId, 1)["runs"][0]["score"]
                         break
@@ -120,7 +127,8 @@ def autoRun(startWorld: int, endWorld: int):
             # After training save your model or Q-table, here we are printing the Q-table
             print(Q_table)
             # save the QTable
-            np.save(filename, Q_table)
+            # np.save(filename, Q_table)
+            counter -=1
 
 
 if __name__ == "__main__":
