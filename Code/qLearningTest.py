@@ -8,11 +8,11 @@ gamma = 0.6  # Discount factor
 epsilon = 0.8  # Exploration rate
 episodes = 10000  # Number of episodes to run
 teamId = "1399"
-worldId = "2"
+worldId = "4"
 exitReward = 1000
-filename = 'q-table2.npy'
+filename = 'q-table4.npy'
 runTimes = 5  # run 5 times in a world
-exit = (17, 11)
+exit = (39, 39)
 
 # Initialize the Q-table, arbitrarily assuming a nxn grid world
 # Q_table = np.zeros((40, 40, 4))
@@ -132,6 +132,7 @@ if __name__ == "__main__":
 
         postAPI = POST()
         while not done:
+            # action = choose_action(state)
             action = choose_quick_action(state)
             moveJson = postAPI.makeMove(teamId, actions[action], worldId)
             print(moveJson)

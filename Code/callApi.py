@@ -73,10 +73,7 @@ if __name__ == "__main__":
     print(text)
 
     post_test = POST()
-    post_test.enterWorld('2', '1399')
-    print(post_test.payload)
-    response = requests.request("POST", url=post_test.url, headers=post_test.headers, data=post_test.payload)
-    print(response.text)
+    post_test.enterWorld('4', '1399')
 
     # getOp = GET()
     # getOp.resetWorld('1399')
