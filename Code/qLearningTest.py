@@ -1,7 +1,7 @@
 import numpy as np
 from callApi import *
 import os
-import  random
+import random
 
 # Hyperparameters
 alpha = 0.1  # Learning rate
@@ -9,23 +9,23 @@ gamma = 0.6  # Discount factor
 epsilon = 0.8  # Exploration rate
 episodes = 10000  # Number of episodes to run
 teamId = "1399"
-worldId = "10"
-exitReward = 10000
-filename = 'q-table10.npy'
+worldId = "9"
+filename = 'q-table9.npy'
 runTimes = 5  # run 5 times in a world
 exit = (3, 0)
+badExits = {}
 
 # Initialize the Q-table, arbitrarily assuming a nxn grid world
 # Q_table = np.zeros((40, 40, 4))
 actions = {0: 'N', 1: 'S', 2: 'E', 3: 'W'}  # action to index mapping
+actionEffect = {0: (0, 1), 1: (0, -1), 2: (1, 0), 3: (-1, 0)}
+# actionEffect = {0: (-1, 0), 1: (1, 0), 2: (0, -1), 3: (0, 1)}
 
 
 def choose_action(state, Q_table):
-
     if np.random.uniform(0, 1) < epsilon:
         return np.random.choice(list(actions.keys()))  # Explore
     else:
-
         return np.argmax(Q_table[state])  # Exploit the best known action
 
 
@@ -47,6 +47,16 @@ def choose_quick_action_randomly(state):
             return result
 
     return np.random.choice(list(actions.keys()))
+
+
+def meetGhost(currentstate, action):
+    stateStr = ','.join(map(str, currentstate))
+    actionStr = ','.join(map(str, actionEffect[action]))
+    print("meetGhostTest at position: " + stateStr + "   action:" + actionStr)
+    for badExit in badExits:
+        if map(sum, zip(actionEffect[action], currentstate)) == badExit:
+            return True
+    return False
 
 
 def learn(state, state2, reward, action):
@@ -84,7 +94,7 @@ def autoRun(startWorld: int, endWorld: int):
                 Q_table = np.load(filename)
             else:
                 # Create a new Q-table with all values initialized to zero
-                Q_table = np.zeros((40, 40, 4), dtype = float)
+                Q_table = np.zeros((40, 40, 4), dtype=float)
                 # Save the new Q-table to the file
                 np.save(filename, Q_table)
             # Main loop
@@ -123,7 +133,7 @@ def autoRun(startWorld: int, endWorld: int):
             print(Q_table)
             # save the QTable
             # np.save(filename, Q_table)
-            counter -=1
+            counter -= 1
 
 
 if __name__ == "__main__":
@@ -135,21 +145,24 @@ if __name__ == "__main__":
     for episode in range(episodes):
         getAPI = GET()
         postAPI = POST()
-        state = getAPI.getLocation("1399")[1]  # Get initial state
+        state = getAPI.getLocation(teamId)[1]  # Get initial state
         print(state)
         if not state:
             # if you want the program never stop, # the 'break' below
             # break
             postAPI.enterWorld(worldId, teamId)
-            state = getAPI.getLocation("1399")[1]
+            state = getAPI.getLocation(teamId)[1]
         runId = getAPI.getRuns(teamId, 1)["runs"][0]["runId"]
 
         total_reward = 0
         done = False
 
         while not done:
-            # action = choose_action(state)
-            action = choose_quick_action_randomly(state)
+            action = choose_action(state, Q_table)
+            while meetGhost(state, action):
+                action = choose_action(state, Q_table)
+
+            # action = choose_quick_action_randomly(state)
             # if counter >= 90 and scoreIncrement == 0:
             #    action = choose_quick_action_randomly(state)
 
@@ -163,6 +176,7 @@ if __name__ == "__main__":
             #     counter = 0
             #     break
             counter += 1
+            print("action:"+actions[action])
             moveJson = postAPI.makeMove(teamId, actions[action], worldId)
             print(moveJson)
             reward = moveJson["reward"]

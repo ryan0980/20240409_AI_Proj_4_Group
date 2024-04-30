@@ -76,25 +76,25 @@ if __name__ == "__main__":
     text = get_test.getScore('1399')
     print(text)
 
-    get_test = GET()
-    text = get_test.getRuns('1399',10000000)
-    print(text)
+    # get_test = GET()
+    # text = get_test.getRuns('1399',10000000)
+    # print(text)
     # Count the records for each 'gworldId'
-    gworld_counts = {}
-    for run in text['runs']:
-        # Get the 'gworldId'
-        gworld_id = run.get('gworldId')
-        # If the 'gworldId' is already in the dictionary, increment the count
-        if gworld_id in gworld_counts:
-            gworld_counts[gworld_id] += 1
-        # If this is the first time we see the 'gworldId', initialize count to 1
-        else:
-            gworld_counts[gworld_id] = 1
+    # gworld_counts = {}
+    # for run in text['runs']:
+    #     # Get the 'gworldId'
+    #     gworld_id = run.get('gworldId')
+    #     # If the 'gworldId' is already in the dictionary, increment the count
+    #     if gworld_id in gworld_counts:
+    #         gworld_counts[gworld_id] += 1
+    #     # If this is the first time we see the 'gworldId', initialize count to 1
+    #     else:
+    #         gworld_counts[gworld_id] = 1
 
     # Output the results
-    print(gworld_counts)
-    #  post_test = POST()
-    #  post_test.enterWorld('4', '1399')
+    # print(gworld_counts)
+    post_test = POST()
+    #  post_test.enterWorld('8', '1399')
 
     # getOp = GET()
     # getOp.resetWorld('1412')
@@ -102,7 +102,9 @@ if __name__ == "__main__":
     # print(response.text)
 
     # W: -1,0   N: 0,+1  S: 0,-1  E:+1,0
-    # moveInfo = post_test.makeMove('1399', 'E', '1')
+    #  N: 1,0         E:0,1
+    # N-1,0
+    # moveInfo = post_test.makeMove('1399', 'N', '8')
     # print(moveInfo)
 
     get_test = GET()
