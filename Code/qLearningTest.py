@@ -9,8 +9,8 @@ gamma = 0.6  # Discount factor
 epsilon = 0.8  # Exploration rate
 episodes = 10000  # Number of episodes to run
 teamId = "1399"
-worldId = "9"
-filename = 'q-table9.npy'
+worldId = "7"
+filename = 'q-table7.npy'
 runTimes = 5  # run 5 times in a world
 exit = (3, 0)
 badExits = {}
@@ -149,7 +149,8 @@ if __name__ == "__main__":
         print(state)
         if not state:
             # if you want the program never stop, # the 'break' below
-            # break
+            break
+        # try to enter a world
             postAPI.enterWorld(worldId, teamId)
             state = getAPI.getLocation(teamId)[1]
         runId = getAPI.getRuns(teamId, 1)["runs"][0]["runId"]
