@@ -4,7 +4,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[![WTFPL License][license-shield]][license-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -107,5 +107,5 @@ Project Link: [https://github.com/ryan0980/20240409_AI_Proj_4_Group](https://git
 [stars-url]: https://github.com/ryan0980/20240409_AI_Proj_4_Group/stargazers
 [issues-shield]: https://img.shields.io/github/issues/ryan0980/20240409_AI_Proj_4_Group.svg?style=for-the-badge
 [issues-url]: https://github.com/ryan0980/20240409_AI_Proj_4_Group/issues
-[license-shield]: https://img.shields.io/github/license/ryan0980/20240409_AI_Proj_4_Group.svg?style=for-the-badge
-[license-url]: https://opensource.org/licenses/MIT
+[license-shield]: https://img.shields.io/badge/license-WTFPL-blue.svg?style=for-the-badge
+[license-url]: https://WTFPL.foundation
