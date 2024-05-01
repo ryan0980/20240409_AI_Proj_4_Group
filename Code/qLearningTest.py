@@ -12,7 +12,7 @@ teamId = "1399"
 worldId = "7"
 filename = 'q-table7.npy'
 runTimes = 5  # run 5 times in a world
-exit = (3, 0)
+# exit = (3, 0)
 badExits = {}
 
 # Initialize the Q-table, arbitrarily assuming a nxn grid world
@@ -142,60 +142,64 @@ if __name__ == "__main__":
     counter = 0
     scoreIncrement = 0
     # Main loop
-    for episode in range(episodes):
-        getAPI = GET()
-        postAPI = POST()
-        state = getAPI.getLocation(teamId)[1]  # Get initial state
-        print(state)
-        if not state:
-            # if you want the program never stop, # the 'break' below
-            break
-        # try to enter a world
-            postAPI.enterWorld(worldId, teamId)
-            state = getAPI.getLocation(teamId)[1]
-        runId = getAPI.getRuns(teamId, 1)["runs"][0]["runId"]
+    with open('logWorld.txt', 'a') as log_file:
+        for episode in range(episodes):
+            getAPI = GET()
+            postAPI = POST()
+            state = getAPI.getLocation(teamId)[1]  # Get initial state
+            print(state)
+            if not state:
+                # if you want the program never stop, # the 'break' below
+                # break
+            # try to enter a world
+                postAPI.enterWorld(worldId, teamId)
+                state = getAPI.getLocation(teamId)[1]
+            runId = getAPI.getRuns(teamId, 1)["runs"][0]["runId"]
 
-        total_reward = 0
-        done = False
+            total_reward = 0
+            done = False
 
-        while not done:
-            action = choose_action(state, Q_table)
-            while meetGhost(state, action):
+            while not done:
                 action = choose_action(state, Q_table)
+                while meetGhost(state, action):
+                    action = choose_action(state, Q_table)
 
-            # action = choose_quick_action_randomly(state)
-            # if counter >= 90 and scoreIncrement == 0:
-            #    action = choose_quick_action_randomly(state)
+                # action = choose_quick_action_randomly(state)
+                # if counter >= 90 and scoreIncrement == 0:
+                #    action = choose_quick_action_randomly(state)
 
-            # if counter >= 90 and scoreIncrement == 0:
-            #     action = choose_quick_action_randomly(state)
-            # if counter <= 40:
-            #     action = 2
-            # if 40 < counter < 90:
-            #     action = 3
-            # if counter >= 90 and scoreIncrement != 0:
-            #     counter = 0
-            #     break
-            counter += 1
-            print("action:"+actions[action])
-            moveJson = postAPI.makeMove(teamId, actions[action], worldId)
-            print(moveJson)
-            reward = moveJson["reward"]
-            scoreIncrement = moveJson["scoreIncrement"]
-            state2 = getAPI.getLocation("1399")[1]
-            learn(state, state2, reward, action)  # Update Q-values
-            if not state2:
+                # if counter >= 90 and scoreIncrement == 0:
+                #     action = choose_quick_action_randomly(state)
+                # if counter <= 40:
+                #     action = 2
+                # if 40 < counter < 90:
+                #     action = 3
+                # if counter >= 90 and scoreIncrement != 0:
+                #     counter = 0
+                #     break
+                counter += 1
+                print("action:"+actions[action])
+                moveJson = postAPI.makeMove(teamId, actions[action], worldId)
+                print(moveJson)
+                log_file.write(str(moveJson)+'\n')
+                reward = moveJson["reward"]
+                scoreIncrement = moveJson["scoreIncrement"]
+                state2 = getAPI.getLocation("1399")[1]
+                learn(state, state2, reward, action)  # Update Q-values
+                if not state2:
+                    total_reward = getAPI.getRuns(teamId, 1)["runs"][0]["score"]
+                    break
+
+                state = state2
                 total_reward = getAPI.getRuns(teamId, 1)["runs"][0]["score"]
-                break
 
-            state = state2
-            total_reward = getAPI.getRuns(teamId, 1)["runs"][0]["score"]
+                if scoreIncrement == 0:
+                    done = True
+                    break
 
-            if scoreIncrement == 0:
-                done = True
-                break
-
-        print(f"Episode {episode + 1}: total reward -> {total_reward}")
+            print(f"Episode {episode + 1}: total reward -> {total_reward}")
+            # log_file.write(f"Episode {episode + 1}: total reward -> {total_reward}")
 
     # After training save your model or Q-table, here we are printing the Q-table
-    print(Q_table)
+        print(Q_table)
+        # log_file.write(str(Q_table))
