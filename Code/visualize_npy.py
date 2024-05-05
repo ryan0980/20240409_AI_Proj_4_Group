@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Loop to load and process files from q-table1.npy to q-table10.npy
-for i in range(7, 8):  # Loop from 1 to 10
+for i in range(6, 7):  # Loop from 1 to 10
     #file_path = f'Code/q-table{i}.npy'  # Construct file path
     file_path = 'Code\q-table6.npy'
     data = np.load(file_path)  # Load the numpy file
